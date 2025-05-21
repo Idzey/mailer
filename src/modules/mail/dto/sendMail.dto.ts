@@ -16,4 +16,8 @@ export class SendMailDto {
   @IsOptional()
   @IsNumber()
   delay: number;
+
+  @IsOptional()
+  @IsNumber()
+  attempts: number;
 }

@@ -151,11 +151,6 @@ exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
 };
-
-exports.Prisma.NullsOrder = {
-  first: 'first',
-  last: 'last'
-};
 exports.MailStatus = exports.$Enums.MailStatus = {
   PENDING: 'PENDING',
   SENT: 'SENT',

@@ -20,10 +20,14 @@ export class MailQueue {
     to: string;
     subject: string;
     text: string;
+    attempts?: number;
     delay?: number;
   }) {
     await this.queue.add('sendMail', data, {
       delay: data.delay || 0,
+      removeOnComplete: 1000,
+      removeOnFail: 5000,
+      attempts: data.attempts || 3,
     });
   }
 }

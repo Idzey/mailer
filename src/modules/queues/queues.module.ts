@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { MailProcessor } from './mail.processor';
 import { MailQueue } from './mail.queue';
-import { ResendService } from 'src/resend/resend.service';
+import { NodemailerModule } from '../nodemailer/nodemailer.module';
 
 @Module({
-  providers: [MailProcessor, MailQueue, ResendService],
+  imports: [NodemailerModule],
+  providers: [MailProcessor, MailQueue],
   exports: [MailQueue],
 })
 export class QueuesModule {}

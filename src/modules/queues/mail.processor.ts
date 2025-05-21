@@ -1,11 +1,11 @@
-import { ResendService } from './../resend/resend.service';
 import { Worker } from 'bullmq';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { RedisOptions } from 'ioredis';
+import { NodemailerService } from 'src/modules/nodemailer/nodemailer.service';
 
 @Injectable()
 export class MailProcessor implements OnModuleInit {
-  constructor(private readonly resendService: ResendService) {}
+  constructor(private readonly mailService: NodemailerService) {}
 
   onModuleInit() {
     const connection: RedisOptions = {
@@ -18,7 +18,7 @@ export class MailProcessor implements OnModuleInit {
       async (job) => {
         const { from, to, subject, text } = job.data;
 
-        await this.resendService.sendMail(from, to, subject, text);
+        await this.mailService.sendMail(from, to, subject, text);
       },
       { connection },
     );
