@@ -7,14 +7,13 @@ import {
   Res,
   Req,
   BadRequestException,
-  Query,
+  Param,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from '../../common/guards/local-auth.guard';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CreateUserDto } from './dto/createUser.dto';
 import { User } from 'src/common/decorators/User';
-import jwtPayload from 'src/modules/auth/interfaces/jwtPayload';
 import { UserPayload } from 'src/modules/auth/interfaces/userPayload';
 import type { Request, Response } from 'express';
 
@@ -24,7 +23,7 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  getProfile(@User() user: jwtPayload) {
+  getProfile(@User() user: UserPayload) {
     return user;
   }
 
@@ -60,7 +59,7 @@ export class AuthController {
   }
 
   @Get('verify-email/:token')
-  async verifyEmail(@Req() req: Request, @Query('token') token: string) {
+  async verifyEmail(@Param('token') token: string) {
     if (!token) {
       throw new BadRequestException('Invalid or expired token');
     }

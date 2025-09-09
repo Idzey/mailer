@@ -4,14 +4,14 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/modules/prisma/prisma.service';
+import { PrismaService } from 'src/modules/libs/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { UserPayload } from 'src/modules/auth/interfaces/userPayload';
 import { CreateUserDto } from './dto/createUser.dto';
 import { Request, Response } from 'express';
 import jwtPayload from 'src/modules/auth/interfaces/jwtPayload';
 import RefreshTokenPayload from 'src/modules/auth/interfaces/refreshTokenPayload';
-import { NodemailerService } from '../nodemailer/nodemailer.service';
+import { NodemailerService } from '../libs/nodemailer/nodemailer.service';
 import { PasswordService } from './services/password.service';
 import { TokenService } from './services/token.service';
 
@@ -196,6 +196,15 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
+
+    await this.prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        isConfirmed: true,
+      },
+    });
 
     return user;
   }

@@ -1,7 +1,7 @@
 import { Worker } from 'bullmq';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { RedisOptions } from 'ioredis';
-import { NodemailerService } from 'src/modules/nodemailer/nodemailer.service';
+import { NodemailerService } from 'src/modules/libs/nodemailer/nodemailer.service';
 
 @Injectable()
 export class MailProcessor implements OnModuleInit {
@@ -16,9 +16,9 @@ export class MailProcessor implements OnModuleInit {
     const worker = new Worker(
       'mailQueue',
       async (job) => {
-        const { from, to, subject, text } = job.data;
+        const { from, to, subject, text, html } = job.data;
 
-        await this.mailService.sendMail(from, to, subject, text);
+        await this.mailService.sendMail(from, to, subject, text, html);
       },
       { connection },
     );

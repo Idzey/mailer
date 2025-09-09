@@ -9,7 +9,7 @@ import jwtConfig from 'src/config/jwt.config';
 import { TokenService } from './services/token.service';
 import { PasswordService } from './services/password.service';
 import { CookieService } from './services/cookie.service';
-import { NodemailerModule } from '../nodemailer/nodemailer.module';
+import { NodemailerModule } from '../libs/nodemailer/nodemailer.module';
 
 @Global()
 @Module({
