@@ -24,9 +24,9 @@ export class SendTemplateDto {
 
   @IsOptional()
   @IsNumber()
-  delay: number;
+  delay?: number;
 
   @IsOptional()
   @IsNumber()
-  attempts: number;
+  attempts?: number;
 }

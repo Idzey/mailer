@@ -13,7 +13,7 @@ const mockUser = {
 };
 
 const jwtUserPayload = {
-  sub: mockUser.id,
+  id: mockUser.id,
   email: mockUser.email,
   name: mockUser.name,
 };
@@ -65,7 +65,7 @@ describe('UsersController', () => {
 
       try {
         await controller.getUser({
-          sub: createId(),
+          id: createId(),
           email: 'gol@mail.com',
           name: '4242',
         });
@@ -92,7 +92,7 @@ describe('UsersController', () => {
         await controller.updateUser(
           {
             ...jwtUserPayload,
-            sub: createId(),
+            id: createId(),
           },
           {
             email: 'gol@mail.com',
@@ -121,7 +121,7 @@ describe('UsersController', () => {
       try {
         await controller.deleteUser({
           ...jwtUserPayload,
-          sub: createId(),
+          id: createId(),
         });
       } catch (error) {
         expect(error).toBeInstanceOf(NotFoundException);

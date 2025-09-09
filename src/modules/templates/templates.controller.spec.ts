@@ -16,7 +16,7 @@ const mockTemplate = {
 };
 
 const jwtUserPayload = {
-  sub: mockTemplate.userId,
+  id: mockTemplate.userId,
   email: 'test@mail.com',
   name: 'Test User',
 };

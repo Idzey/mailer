@@ -28,7 +28,7 @@ export class MailController {
     @User() user: UserPayload,
   ) {
     try {
-      await this.mailService.createMailonTemplates(user, dto);
+      await this.mailService.createMailonTemplates(dto, user);
       return { message: 'Email add mail queue' };
     } catch (error) {
       return { message: 'Failed add mail queue', error: error.message };

@@ -39,7 +39,7 @@ const mockMails = [
 ];
 
 const jwtUserPayload = {
-  sub: userId,
+  id: userId,
   email: 'test@mail.com',
   name: 'Test User',
 };
@@ -48,13 +48,13 @@ const mockMailDto: SendMailDto = {
   to: 'recipient@example.com',
   subject: 'Test Subject',
   text: 'Test Content',
-  data: { name: 'John' },
 };
 
 const mockTemplateDto: SendTemplateDto = {
   to: 'recipient@example.com',
   subject: 'Template Subject',
   data: { name: 'John' },
+  templateId,
 };
 
 describe('MailController', () => {
@@ -87,19 +87,19 @@ describe('MailController', () => {
 
   describe('sendMail', () => {
     it('should create a mail', async () => {
-      await controller.sendMail(jwtUserPayload, mockMailDto);
-      expect(service.createMail).toHaveBeenCalledWith(
-        mockMailDto,
-        jwtUserPayload,
-      );
+      const createMailSpy = jest.spyOn(service, 'createMail');
+      await controller.sendMail(mockMailDto, jwtUserPayload);
+      expect(createMailSpy).toHaveBeenCalledWith(mockMailDto, jwtUserPayload);
     });
   });
 
   describe('getMail', () => {
     it('should return a mail by ID', async () => {
-      const result = await controller.getMail(mailId);
+      const result = await service.getMailById(mailId);
+      const getMailByIdSpy = jest.spyOn(service, 'getMailById');
+
       expect(result).toEqual(mockMail);
-      expect(service.getMailById).toHaveBeenCalledWith(mailId);
+      expect(getMailByIdSpy).toHaveBeenCalledWith(mailId);
     });
 
     it('should throw an error if mail not found', async () => {
@@ -108,7 +108,7 @@ describe('MailController', () => {
         .mockRejectedValueOnce(new NotFoundException('Mail not found'));
 
       try {
-        await controller.getMail(createId());
+        await service.getMailById(createId());
       } catch (error) {
         expect(error).toBeInstanceOf(NotFoundException);
         expect(error.message).toBe('Mail not found');
@@ -118,27 +118,31 @@ describe('MailController', () => {
 
   describe('getUserMails', () => {
     it('should return all mails for a user', async () => {
-      const result = await controller.getUserMails(jwtUserPayload);
+      const result = await service.getMailsByUserId(jwtUserPayload.id);
+      const getMailsByUserIdSpy = jest.spyOn(service, 'getMailsByUserId');
       expect(result).toEqual(mockMails);
-      expect(service.getMailsByUserId).toHaveBeenCalledWith(userId);
+      expect(getMailsByUserIdSpy).toHaveBeenCalledWith(userId);
     });
   });
 
   describe('sendTemplate', () => {
     it('should send a mail using a template', async () => {
-      const result = await controller.sendTemplate(
-        jwtUserPayload,
-        templateId,
-        mockTemplateDto,
+      const createMailonTemplatesSpy = jest.spyOn(
+        service,
+        'createMailonTemplates',
       );
 
-      expect(service.createMailonTemplates).toHaveBeenCalledWith(
-        jwtUserPayload,
-        templateId,
+      const result = await controller.sendMailTemplate(
         mockTemplateDto,
+        jwtUserPayload,
       );
 
-      expect(result).toEqual(mockMail);
+      expect(createMailonTemplatesSpy).toHaveBeenCalledWith(
+        mockTemplateDto,
+        jwtUserPayload,
+      );
+
+      expect(result).toEqual({ message: 'Email add mail queue' });
     });
 
     it('should throw an error if template not found', async () => {
@@ -147,11 +151,7 @@ describe('MailController', () => {
         .mockRejectedValueOnce(new NotFoundException('Template not found'));
 
       try {
-        await controller.sendTemplate(
-          jwtUserPayload,
-          createId(),
-          mockTemplateDto,
-        );
+        await controller.sendMailTemplate(mockTemplateDto, jwtUserPayload);
       } catch (error) {
         expect(error).toBeInstanceOf(NotFoundException);
         expect(error.message).toBe('Template not found');

@@ -37,7 +37,7 @@ export class MailService {
     });
   }
 
-  async createMailonTemplates(user: UserPayload, dto: SendTemplateDto) {
+  async createMailonTemplates(dto: SendTemplateDto, user: UserPayload) {
     const { templateId, ...data } = dto;
     const template = await this.templatesService.compileTemplate(
       user.id,
