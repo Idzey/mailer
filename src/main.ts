@@ -13,7 +13,7 @@ async function bootstrap() {
     .setDescription('The postify API description')
     .setVersion('1.0')
     .setContact('Idzey', 'https://github.com/Idzey/', 'kir.pan.878@gmail.com')
-    .addTag('postify')
+    .addBearerAuth()
     .build();
 
   const documentFactory = () => SwaggerModule.createDocument(app, config);
